@@ -2,7 +2,7 @@
 import Post from "../components/Post.astro";
 import Layout from "../layouts/Layout.astro";
 
-const post = await Astro.glob("./posts/*.{md,mdx}");
+const posts = await Astro.glob("./posts/*.{md,mdx}");
 ---
 
 <Layout title="Blog">
@@ -16,13 +16,7 @@ const post = await Astro.glob("./posts/*.{md,mdx}");
       </h1>
 
       <div class="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2">
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
+        {posts.map((post) => <Post post={post} />)}
       </div>
     </div>
   </section>
