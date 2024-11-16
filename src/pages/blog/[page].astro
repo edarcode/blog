@@ -1,0 +1,31 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Paged from "../../components/Paged.astro";
+export const getStaticPaths = (async ({ paginate }) => {
+  const blog = await getCollection("blog");
+  return paginate(blog, { pageSize: 2 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const blogs = page.data;
+---
+
+<Layout>
+  <div class="flex gap-3">
+    {
+      blogs.map((post) => (
+        <article class="max-w-64 grid gap-2">
+          <span>{post.data.title}</span>
+          <img src={post.data.image.src} alt={post.data.title} />
+        </article>
+      ))
+    }
+  </div>
+  <Paged
+    currentPage={page.currentPage}
+    prev={page.url.prev}
+    next={page.url.next}
+  />
+</Layout>
