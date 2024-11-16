@@ -2,6 +2,8 @@
 import type { GetStaticPaths } from "astro";
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
+import { getEntry } from "astro:content";
+import { Image } from "astro:assets";
 
 export const getStaticPaths = (async () => {
   const blog = await getCollection("blog");
@@ -14,11 +16,21 @@ export const getStaticPaths = (async () => {
 
 const { post } = Astro.props;
 const { Content, headings } = await post.render();
+const authorId = post.data.author.id;
+
+const author = await getEntry("author", authorId);
 ---
 
 <Layout title={post.data.title}>
   <div>
-    <span>Autor: {post.data.author.id}</span>
+    <div class="flex items-center">
+      <span
+        >Autor: <a href={`/blog/${author.id}`} class="text-blue-600"
+          >{author.data.name}</a
+        ></span
+      >
+      <Image class={"w-12"} src={author.data.avatar} alt={author.data.name} />
+    </div>
     <h2>Indice</h2>
     <nav class="grid">
       {
