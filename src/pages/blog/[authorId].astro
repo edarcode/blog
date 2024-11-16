@@ -1,0 +1,24 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+import Post from "../../components/Post.astro";
+import Layout from "../../layouts/Layout.astro";
+
+export const getStaticPaths = (async () => {
+  const author = await getCollection("author");
+  const blog = await getCollection("blog");
+
+  return author.map((item) => ({
+    params: { authorId: item.id },
+    props: { posts: blog.filter((post) => post.data.author.id === item.id) },
+  }));
+}) satisfies GetStaticPaths;
+
+const { authorId } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<Layout title={authorId}>
+  <h1>{authorId}</h1>
+  {posts.map((post) => <Post post={post} />)}
+</Layout>
